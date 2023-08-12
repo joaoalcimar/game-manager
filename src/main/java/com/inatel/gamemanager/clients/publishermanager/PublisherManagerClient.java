@@ -7,6 +7,8 @@ import com.inatel.gamemanager.utils.RestTemplateUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,8 @@ public class PublisherManagerClient {
     @Autowired
     private RestTemplateUtil restTemplate;
 
-    public boolean isPublisherValid(String publisherId) {
+    @Cacheable("publishersAllowList")
+    public Map<String, String> getPublishersAllowList() {
 
         try{
             String publisherClientResponseRaw = restTemplate.get(PUBLISHER_ENDPOINT).getBody();
@@ -32,7 +35,7 @@ public class PublisherManagerClient {
             Map<String, String> publishersAllowList =
                     JsonConverterUtil.convertStringToMapFromClientResponse(publisherClientResponseRaw);
 
-            return publishersAllowList.containsKey(publisherId);
+            return publishersAllowList;
 
         } catch (Exception e){
             log.error("Communication with Publisher API goes wrong.");
@@ -41,6 +44,10 @@ public class PublisherManagerClient {
                     "Contact Support.");
         }
 
+    }
+
+    @CacheEvict(value = "publishersAllowList", allEntries = true)
+    public void clearPublishersAllowListCache() {
     }
 
     @PostConstruct

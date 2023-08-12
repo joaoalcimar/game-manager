@@ -12,8 +12,8 @@ import com.inatel.gamemanager.models.dtos.responses.GameResponse;
 import com.inatel.gamemanager.repositories.GameManagementRepository;
 import com.inatel.gamemanager.utils.TimeFormatterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,6 @@ public class GameManagementService {
     @Autowired
     private PublisherManagerClient publisherManagerClient;
 
-    @Transactional
     public GameResponse save(GameRequest request){
         validatePublisherId(request.getPublisherId());
         validateName(request.getName());
@@ -47,11 +46,13 @@ public class GameManagementService {
     }
 
     public List<GameResponse> findAll() {
+
         return gameManagementRepository.findAll()
                 .stream()
                 .map(GameResponse::of)
                 .collect(Collectors.toList());
     }
+
 
     //Supports similar results and case-insensitive
     public List<GameResponse> findByPublisherId(String publisherId) {
@@ -68,7 +69,7 @@ public class GameManagementService {
             throw new EmptyStringException("The game publisher id must to be informed.");
         }
 
-        if(!publisherManagerClient.isPublisherValid(publisherId)){
+        if(!publisherManagerClient.getPublishersAllowList().containsKey(publisherId)){
             throw new InvalidPublisherException("This publisher id is not allowed. Contact Support.");
         }
     }
