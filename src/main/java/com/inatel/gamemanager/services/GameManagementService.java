@@ -30,7 +30,8 @@ public class GameManagementService {
     private PublisherManagerClient publisherManagerClient;
 
     public GameResponse save(GameRequest request){
-        validatePublisherId(request.getPublisherId());
+        validatePublisherIdParameter(request.getPublisherId());
+        validatePublisherIdInPublisherApi(request.getPublisherId());
         validateName(request.getName());
         validateTimePlayed(request.getTimePlayed());
 
@@ -56,7 +57,7 @@ public class GameManagementService {
 
     //Supports similar results and case-insensitive
     public List<GameResponse> findByPublisherId(String publisherId) {
-        validatePublisherId(publisherId);
+        validatePublisherIdParameter(publisherId);
 
         return gameManagementRepository.findByPublisherIdIgnoreCaseContaining(publisherId)
                 .stream()
@@ -64,11 +65,13 @@ public class GameManagementService {
                 .collect(Collectors.toList());
     }
 
-    protected void validatePublisherId(String publisherId) {
+    protected void validatePublisherIdParameter(String publisherId) {
         if(isEmpty(publisherId)){
             throw new EmptyStringException("The game publisher id must to be informed.");
         }
+    }
 
+    protected void validatePublisherIdInPublisherApi(String publisherId) {
         if(!publisherManagerClient.getPublishersAllowList().containsKey(publisherId)){
             throw new InvalidPublisherException("This publisher id is not allowed. Contact Support.");
         }

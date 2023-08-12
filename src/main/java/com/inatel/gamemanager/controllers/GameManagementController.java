@@ -20,14 +20,13 @@ public class GameManagementController {
         return gameManagementService.save(request);
     }
 
+    //since in the documentation they are mapped to the same route
     @GetMapping
-    public List<GameResponse> findAll(){
-        return gameManagementService.findAll();
+    public List<GameResponse> findByPublisher(@RequestParam(required = false) String publisherId){
+        if (publisherId != null){
+            return gameManagementService.findByPublisherId(publisherId);
+        }else {
+            return gameManagementService.findAll();
+        }
     }
-
-    @GetMapping("{publisherId}")
-    public List<GameResponse> findByPublisherId(@PathVariable String publisherId){
-        return gameManagementService.findByPublisherId(publisherId);
-    }
-
 }
