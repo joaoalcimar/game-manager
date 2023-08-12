@@ -1,7 +1,7 @@
 package com.inatel.gamemanager.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.inatel.gamemanager.clients.PublisherManagerClient;
+import com.inatel.gamemanager.clients.publishermanager.PublisherManagerClient;
 import com.inatel.gamemanager.exceptions.EmptyStringException;
 import com.inatel.gamemanager.exceptions.InvalidPublisherException;
 import com.inatel.gamemanager.exceptions.TimeFormatException;

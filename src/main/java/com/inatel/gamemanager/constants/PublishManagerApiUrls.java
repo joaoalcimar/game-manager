@@ -11,5 +11,4 @@ public final class PublishManagerApiUrls {
     public static final String PORT = "8080";
     public static final String PUBLISHER_ENDPOINT = BASE_URL + PORT + "/publisher";
     public static final String NOTIFICATION_ENDPOINT = BASE_URL + PORT + "/notification";
-    public static final String PUBLISHER_CACHE_ENDPOINT = BASE_URL + PORT + "/publishercache";
 }
