@@ -1,4 +1,4 @@
-package com.inatel.gamemanager.caches;
+package com.inatel.gamemanager.configs;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
