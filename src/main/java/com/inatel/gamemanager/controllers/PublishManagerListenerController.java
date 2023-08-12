@@ -28,6 +28,6 @@ public class PublishManagerListenerController {
 
         log.info("Publishers allow list cache clean up succeeded.");
 
-        return new HttpResponse("The cache has been cleared successfully", HttpStatus.OK);
+        return new HttpResponse("The cache has been cleared successfully.", HttpStatus.OK);
     }
 }
