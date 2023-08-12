@@ -49,6 +49,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(details, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnexpectedResponseException.class)
+    public ResponseEntity<?> handleValidationException(UnexpectedResponseException unexpectedResponseException){
+
+        ExceptionDetails details = new ExceptionDetails();
+        details.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        details.setMessage(unexpectedResponseException.getMessage());
+
+        return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<?> handleValidationException(ValidationException validationException){
 

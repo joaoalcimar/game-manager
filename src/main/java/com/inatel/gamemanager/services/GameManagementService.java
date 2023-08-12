@@ -53,6 +53,7 @@ public class GameManagementService {
                 .collect(Collectors.toList());
     }
 
+    //Supports similar results and case-insensitive
     public List<GameResponse> findByPublisherId(String publisherId) {
         validatePublisherId(publisherId);
 
@@ -67,7 +68,7 @@ public class GameManagementService {
             throw new EmptyStringException("The game publisher id must to be informed.");
         }
 
-        if(!publisherManagerClient.validatePublisher(publisherId)){
+        if(!publisherManagerClient.isPublisherValid(publisherId)){
             throw new InvalidPublisherException("This publisher id is not allowed. Contact Support.");
         }
     }
