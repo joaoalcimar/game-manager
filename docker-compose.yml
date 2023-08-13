@@ -1,0 +1,61 @@
+version: "3"
+services:
+
+  publisher-manager-db:
+    image: mysql
+    container_name: publisher-manager-db
+    networks:
+      - inatel
+    environment:
+      - MYSQL_DATABASE=bootdb
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+
+  game-manager-db:
+    image: mysql
+    container_name: game-manager-db
+    hostname: game-manager-db
+    networks:
+      - inatel
+    environment:
+      - MYSQL_DATABASE=game-manager
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3307:3306"
+
+  publisher-manager-api:
+    image: adautomendes/publisher-manager
+    container_name: publisher-manager-api
+    depends_on:
+      - publisher-manager-db
+    networks:
+      - inatel
+    environment:
+      - SERVER_PORT=8080
+      - SERVER_HOST=publisher-manager-api
+      - MYSQL_HOST=publisher-manager-db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=bootdb
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "8080:8080"
+
+  game-manager-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game-manager-api
+    hostname: game-manager-api
+    depends_on:
+      - game-manager-db
+    networks:
+      - inatel
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://game-manager-db:3307/game-manager?autoReconnect=true&useSSL=false
+    ports:
+      - "8081:8081"
+
+networks:
+  inatel:
+    driver: bridge
