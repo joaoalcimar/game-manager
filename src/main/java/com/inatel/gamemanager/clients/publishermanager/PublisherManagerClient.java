@@ -1,6 +1,7 @@
 package com.inatel.gamemanager.clients.publishermanager;
 
 import com.inatel.gamemanager.clients.publishermanager.models.RegisterRequestBody;
+import com.inatel.gamemanager.configs.PublishManagerServiceConfig;
 import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.JsonConverterUtil;
 import com.inatel.gamemanager.utils.RestTemplateUtil;
@@ -28,11 +29,15 @@ public class PublisherManagerClient {
     @Autowired
     private RestTemplateUtil restTemplate;
 
+    @Autowired
+    private PublishManagerServiceConfig publishManagerService;
+
     @Cacheable("publishersAllowList")
     public Map<String, String> getPublishersAllowList() {
 
         try{
-            String publisherClientResponseRaw = restTemplate.get(PUBLISHER_ENDPOINT).getBody();
+            String url = publishManagerService.getPublisherManagerBaseUrl() + PUBLISHER_ENDPOINT;
+            String publisherClientResponseRaw = restTemplate.get(url).getBody();
 
             Map<String, String> publishersAllowList =
                     JsonConverterUtil.convertStringToMapFromClientResponse(publisherClientResponseRaw);
@@ -55,12 +60,14 @@ public class PublisherManagerClient {
     @PostConstruct
     public void register(){
         try{
+            String url = publishManagerService.getPublisherManagerBaseUrl() + NOTIFICATION_ENDPOINT;
+
             RegisterRequestBody requestBody = new RegisterRequestBody(BASE_URL, PORT);
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-            restTemplate.post(NOTIFICATION_ENDPOINT, requestBody, httpHeaders);
+            restTemplate.post(url, requestBody, httpHeaders);
         }catch (Exception e){
             log.error("Failed to register in Publisher Manager Api.");
             e.printStackTrace();

@@ -29,6 +29,7 @@ Make sure you have the following software installed on your system:
 
 1. Go through game-manager directory on CMD
 2. Run docker-compose up --build
+3. Ports 3306, 5433, 8080, 8081 must be free
 
 ## **Contributing**
 Contributions are welcome! If you have any ideas or improvements for the project, please submit a pull request. Make sure to follow the existing code style and provide detailed information about the changes you made.

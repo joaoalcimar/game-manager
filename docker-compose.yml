@@ -31,33 +31,38 @@ services:
       - "8080:8080"
 
   game-db:
-    image: mysql
-    hostname: game-db
+    image: postgres:11
     container_name: game-db
     restart: always
     networks:
       - inatel
     environment:
-      - MYSQL_DATABASE=game-manager
-      - MYSQL_ROOT_PASSWORD=root
+      - POSTGRES_DB=game-manager
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
     ports:
-      - "3307:3307"
+      - "5433:5432"
 
   game-api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: game-api
+    restart: always
     depends_on:
       - game-db
       - publisher-manager
     networks:
       - inatel
     environment:
-      - SERVER_HOST=game-api
-      - SERVER_PORT=8081
-      - MYSQL_HOST=game-db
-      - MYSQL_PORT=3307
+      - PORT=8081
+      - DB_HOST=game-db
+      - DB_PORT=5432
+      - DB_NAME=game-manager
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - PUBLISHER_SERVICE_HOST=publisher-manager
+      - PUBLISHER_SERVICE_PORT=8080
     ports:
       - "8081:8081"
 

@@ -1,6 +1,7 @@
 package com.inatel.gamemanager.clients.publishermanager;
 
 import com.inatel.gamemanager.clients.publishermanager.models.RegisterRequestBody;
+import com.inatel.gamemanager.configs.PublishManagerServiceConfig;
 import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.RestTemplateUtil;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,12 +26,15 @@ public class PublisherManagerClientTest {
 
     private final RestTemplateUtil restTemplate = mock(RestTemplateUtil.class);
 
+    private PublishManagerServiceConfig publishManagerService = mock(PublishManagerServiceConfig.class);
+
     private PublisherManagerClient publisherManagerClient;
 
     @Before
     public void setUp() {
         publisherManagerClient = new PublisherManagerClient();
         publisherManagerClient.setRestTemplate(restTemplate);
+        publisherManagerClient.setPublishManagerService(publishManagerService);
     }
 
     @Test
@@ -37,6 +42,7 @@ public class PublisherManagerClientTest {
     public void testGetPublishersAllowListSuccess(){
         String mockResponse = "[{\"id\":\"1\",\"name\":\"konami\"},{\"id\":\"2\",\"name\":\"capcom\"}]";
         when(restTemplate.get(any())).thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
+        when(publishManagerService.getPublisherManagerBaseUrl()).thenReturn("url");
 
         Map<String, String> expectedMap = new HashMap<>();
         expectedMap.put("1", "konami");

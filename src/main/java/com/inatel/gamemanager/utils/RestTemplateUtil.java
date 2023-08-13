@@ -1,17 +1,17 @@
 package com.inatel.gamemanager.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-@AllArgsConstructor
-@NoArgsConstructor
 public class RestTemplateUtil {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+
+    public RestTemplateUtil() {
+        this.restTemplate = new RestTemplate();
+    }
 
     public ResponseEntity<String> get(String url) {
         return restTemplate.exchange(url, HttpMethod.GET, null, String.class);
