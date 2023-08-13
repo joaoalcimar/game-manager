@@ -11,6 +11,7 @@ import com.inatel.gamemanager.models.dtos.requests.GameRequest;
 import com.inatel.gamemanager.models.dtos.responses.GameResponse;
 import com.inatel.gamemanager.repositories.GameManagementRepository;
 import com.inatel.gamemanager.utils.TimeFormatterUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
+@AllArgsConstructor
 public class GameManagementService {
 
     @Autowired
