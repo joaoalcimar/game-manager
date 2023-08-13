@@ -1,12 +1,14 @@
 package com.inatel.gamemanager.utils;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 @AllArgsConstructor
+@NoArgsConstructor
 public class RestTemplateUtil {
 
     private RestTemplate restTemplate;

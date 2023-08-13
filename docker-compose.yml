@@ -3,7 +3,9 @@ services:
 
   publisher-manager-db:
     image: mysql
+    hostname: mysql
     container_name: publisher-manager-db
+    restart: always
     networks:
       - inatel
     environment:
@@ -12,47 +14,50 @@ services:
     ports:
       - "3306:3306"
 
-  game-manager-db:
+  publisher-manager:
+    image: adautomendes/publisher-manager
+    container_name: publisher-manager
+    restart: always
+    networks:
+      - inatel
+    depends_on:
+      - publisher-manager-db
+    environment:
+      - SERVER_HOST=publisher-manager
+      - SERVER_PORT=8080
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    ports:
+      - "8080:8080"
+
+  game-db:
     image: mysql
-    container_name: game-manager-db
-    hostname: game-manager-db
+    hostname: game-db
+    container_name: game-db
+    restart: always
     networks:
       - inatel
     environment:
       - MYSQL_DATABASE=game-manager
       - MYSQL_ROOT_PASSWORD=root
     ports:
-      - "3307:3306"
+      - "3307:3307"
 
-  publisher-manager-api:
-    image: adautomendes/publisher-manager
-    container_name: publisher-manager-api
-    depends_on:
-      - publisher-manager-db
-    networks:
-      - inatel
-    environment:
-      - SERVER_PORT=8080
-      - SERVER_HOST=publisher-manager-api
-      - MYSQL_HOST=publisher-manager-db
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=bootdb
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - "8080:8080"
-
-  game-manager-api:
+  game-api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: game-manager-api
-    hostname: game-manager-api
+    container_name: game-api
     depends_on:
-      - game-manager-db
+      - game-db
+      - publisher-manager
     networks:
       - inatel
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://game-manager-db:3307/game-manager?autoReconnect=true&useSSL=false
+      - SERVER_HOST=game-api
+      - SERVER_PORT=8081
+      - MYSQL_HOST=game-db
+      - MYSQL_PORT=3307
     ports:
       - "8081:8081"
 
