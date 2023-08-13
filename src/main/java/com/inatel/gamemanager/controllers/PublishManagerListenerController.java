@@ -1,6 +1,7 @@
 package com.inatel.gamemanager.controllers;
 
 import com.inatel.gamemanager.clients.publishermanager.PublisherManagerClient;
+import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.models.dtos.responses.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ public class PublishManagerListenerController {
     private PublisherManagerClient publisherManagerClient;
 
     @DeleteMapping
-    public HttpResponse cacheCleanUp(){
+    public HttpResponse cacheCleanUp() {
         try{
             publisherManagerClient.clearPublishersAllowListCache();
         }catch (Exception e){
             log.error("Something went wrong in publishers allow list cache clean up.");
             e.printStackTrace();
+            throw new UnexpectedResponseException("Internal Server Error. Contact Support.");
         }
 
         log.info("Publishers allow list cache clean up succeeded.");

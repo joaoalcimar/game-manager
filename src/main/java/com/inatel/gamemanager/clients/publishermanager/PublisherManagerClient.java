@@ -5,6 +5,7 @@ import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.JsonConverterUtil;
 import com.inatel.gamemanager.utils.RestTemplateUtil;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,6 +22,7 @@ import static com.inatel.gamemanager.constants.PublishManagerApiUrls.*;
 
 @Slf4j
 @Component
+@Data
 public class PublisherManagerClient {
 
     @Autowired

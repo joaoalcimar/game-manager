@@ -24,5 +24,4 @@ public class GameResponse {
         BeanUtils.copyProperties(game, response);
         return response;
     }
-
 }

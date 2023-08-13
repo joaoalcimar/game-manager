@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TimeFormatException.class)
-    public ResponseEntity<?> handleAuthenticationException(TimeFormatException timeFormatException){
+    public ResponseEntity<?> handleTimeFormatException(TimeFormatException timeFormatException){
 
         ExceptionDetails details = new ExceptionDetails();
         details.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnexpectedResponseException.class)
-    public ResponseEntity<?> handleValidationException(UnexpectedResponseException unexpectedResponseException){
+    public ResponseEntity<?> handleUnexpectedResponseException(UnexpectedResponseException unexpectedResponseException){
 
         ExceptionDetails details = new ExceptionDetails();
         details.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
