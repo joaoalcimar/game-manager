@@ -31,7 +31,6 @@ public class Game {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob
     @Column(name = "timePlayed", nullable = false)
     private String timePlayed;
 
