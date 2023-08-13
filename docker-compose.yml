@@ -3,7 +3,9 @@ services:
 
   publisher-manager-db:
     image: mysql
+    hostname: mysql
     container_name: publisher-manager-db
+    restart: always
     networks:
       - inatel
     environment:
@@ -12,47 +14,55 @@ services:
     ports:
       - "3306:3306"
 
-  game-manager-db:
-    image: mysql
-    container_name: game-manager-db
-    hostname: game-manager-db
+  publisher-manager:
+    image: adautomendes/publisher-manager
+    container_name: publisher-manager
+    restart: always
     networks:
       - inatel
-    environment:
-      - MYSQL_DATABASE=game-manager
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - "3307:3306"
-
-  publisher-manager-api:
-    image: adautomendes/publisher-manager
-    container_name: publisher-manager-api
     depends_on:
       - publisher-manager-db
-    networks:
-      - inatel
     environment:
+      - SERVER_HOST=publisher-manager
       - SERVER_PORT=8080
-      - SERVER_HOST=publisher-manager-api
-      - MYSQL_HOST=publisher-manager-db
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
-      - MYSQL_DATABASE=bootdb
-      - MYSQL_ROOT_PASSWORD=root
     ports:
       - "8080:8080"
 
-  game-manager-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: game-manager-api
-    hostname: game-manager-api
-    depends_on:
-      - game-manager-db
+  game-db:
+    image: postgres:11
+    container_name: game-db
+    restart: always
     networks:
       - inatel
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://game-manager-db:3307/game-manager?autoReconnect=true&useSSL=false
+      - POSTGRES_DB=game-manager
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5433:5432"
+
+  game-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game-api
+    restart: always
+    depends_on:
+      - game-db
+      - publisher-manager
+    networks:
+      - inatel
+    environment:
+      - PORT=8081
+      - DB_HOST=game-db
+      - DB_PORT=5432
+      - DB_NAME=game-manager
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - PUBLISHER_SERVICE_HOST=publisher-manager
+      - PUBLISHER_SERVICE_PORT=8080
     ports:
       - "8081:8081"
 

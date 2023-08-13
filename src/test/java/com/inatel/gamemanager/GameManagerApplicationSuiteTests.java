@@ -12,7 +12,6 @@ import com.inatel.gamemanager.models.dtos.responses.HttpResponseTest;
 import com.inatel.gamemanager.models.entities.GameTest;
 import com.inatel.gamemanager.services.GameManagementServiceTest;
 import com.inatel.gamemanager.utils.JsonConverterUtilTest;
-import com.inatel.gamemanager.utils.RestTemplateUtilTest;
 import com.inatel.gamemanager.utils.TimeFormatterUtilTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 		// utils dir
 		JsonConverterUtilTest.class,
-		RestTemplateUtilTest.class,
 		TimeFormatterUtilTest.class
 })
 
