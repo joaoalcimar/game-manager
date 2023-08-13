@@ -1,0 +1,71 @@
+version: "3"
+services:
+
+  publisher-manager-db:
+    image: mysql
+    hostname: mysql
+    container_name: publisher-manager-db
+    restart: always
+    networks:
+      - inatel
+    environment:
+      - MYSQL_DATABASE=bootdb
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+
+  publisher-manager:
+    image: adautomendes/publisher-manager
+    container_name: publisher-manager
+    restart: always
+    networks:
+      - inatel
+    depends_on:
+      - publisher-manager-db
+    environment:
+      - SERVER_HOST=publisher-manager
+      - SERVER_PORT=8080
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    ports:
+      - "8080:8080"
+
+  game-db:
+    image: postgres:11
+    container_name: game-db
+    restart: always
+    networks:
+      - inatel
+    environment:
+      - POSTGRES_DB=game-manager
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5433:5432"
+
+  game-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game-api
+    restart: always
+    depends_on:
+      - game-db
+      - publisher-manager
+    networks:
+      - inatel
+    environment:
+      - PORT=8081
+      - DB_HOST=game-db
+      - DB_PORT=5432
+      - DB_NAME=game-manager
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - PUBLISHER_SERVICE_HOST=publisher-manager
+      - PUBLISHER_SERVICE_PORT=8080
+    ports:
+      - "8081:8081"
+
+networks:
+  inatel:
+    driver: bridge
