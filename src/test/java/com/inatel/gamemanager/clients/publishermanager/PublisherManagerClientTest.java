@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,7 +25,7 @@ public class PublisherManagerClientTest {
 
     private final RestTemplateUtil restTemplate = mock(RestTemplateUtil.class);
 
-    private PublishManagerServiceConfig publishManagerService = mock(PublishManagerServiceConfig.class);
+    private final PublishManagerServiceConfig publishManagerService = mock(PublishManagerServiceConfig.class);
 
     private PublisherManagerClient publisherManagerClient;
 
