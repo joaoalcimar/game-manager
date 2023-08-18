@@ -6,11 +6,17 @@ import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.JsonConverterUtil;
 import com.inatel.gamemanager.utils.RestTemplateUtil;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -24,7 +30,7 @@ import static com.inatel.gamemanager.constants.PublishManagerApiUrls.*;
 @Slf4j
 @Component
 @Data
-public class PublisherManagerClient {
+public class PublisherManagerClient implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private RestTemplateUtil restTemplate;
@@ -57,8 +63,8 @@ public class PublisherManagerClient {
     public void clearPublishersAllowListCache() {
     }
 
-    @PostConstruct
-    public void register(){
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         try{
             String url = publishManagerService.getPublisherManagerBaseUrl() + NOTIFICATION_ENDPOINT;
 
@@ -75,5 +81,4 @@ public class PublisherManagerClient {
 
         log.info("Game Manager API successfully registered in Publisher Manager.");
     }
-
 }
