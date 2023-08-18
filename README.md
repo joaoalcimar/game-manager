@@ -9,6 +9,7 @@ The documentation of endpoints is here: [Documentation](https://github.com/joaoa
 - Java
 - Spring Boot
 - MySql Server
+- PostgreSQL
 - Docker
 
 ## **Getting Started**
