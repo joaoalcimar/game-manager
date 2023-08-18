@@ -13,8 +13,6 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringRunner.class)
 public class PublisherManagerClientTest {
 
-    private final PublishManagerServiceConfig publishManagerService = mock(PublishManagerServiceConfig.class);
-
     @Before
     public void setUp() {
 //        publisherManagerClient = new PublisherManagerClient();
