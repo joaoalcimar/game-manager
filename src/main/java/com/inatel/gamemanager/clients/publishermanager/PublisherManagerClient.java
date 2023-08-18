@@ -4,17 +4,15 @@ import com.inatel.gamemanager.clients.publishermanager.models.RegisterRequestBod
 import com.inatel.gamemanager.configs.PublishManagerServiceConfig;
 import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.JsonConverterUtil;
-import com.inatel.gamemanager.utils.RestTemplateUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
@@ -27,18 +25,25 @@ import static com.inatel.gamemanager.constants.PublishManagerApiUrls.*;
 @Data
 public class PublisherManagerClient implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
-    private RestTemplateUtil restTemplate;
+    private final WebClient webClient;
 
-    @Autowired
-    private PublishManagerServiceConfig publishManagerService;
+    private PublishManagerServiceConfig publishManagerServiceConfig;
+
+    public PublisherManagerClient(WebClient.Builder webClientBuilder,
+                                  PublishManagerServiceConfig publishManagerServiceConfig) {
+        this.publishManagerServiceConfig = publishManagerServiceConfig;
+        this.webClient = webClientBuilder.baseUrl(publishManagerServiceConfig.getPublisherManagerBaseUrl()).build();
+    }
 
     @Cacheable("publishersAllowList")
     public Map<String, String> getPublishersAllowList() {
 
         try{
-            String url = publishManagerService.getPublisherManagerBaseUrl() + PUBLISHER_ENDPOINT;
-            String publisherClientResponseRaw = restTemplate.get(url).getBody();
+            String publisherClientResponseRaw =
+                    webClient.get().uri(PUBLISHER_ENDPOINT)
+                            .retrieve()
+                            .bodyToMono(String.class)
+                            .block();
 
             Map<String, String> publishersAllowList =
                     JsonConverterUtil.convertStringToMapFromClientResponse(publisherClientResponseRaw);
@@ -51,7 +56,6 @@ public class PublisherManagerClient implements ApplicationListener<ContextRefres
             throw new UnexpectedResponseException("We apologize, but an unexpected error occurred on our server. " +
                     "Contact Support.");
         }
-
     }
 
     @CacheEvict(value = "publishersAllowList", allEntries = true)
@@ -61,14 +65,14 @@ public class PublisherManagerClient implements ApplicationListener<ContextRefres
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try{
-            String url = publishManagerService.getPublisherManagerBaseUrl() + NOTIFICATION_ENDPOINT;
 
             RegisterRequestBody requestBody = new RegisterRequestBody(BASE_URL, PORT);
 
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-            restTemplate.post(url, requestBody, httpHeaders);
+            webClient.post().uri(NOTIFICATION_ENDPOINT)
+                    .body(BodyInserters.fromValue(requestBody))
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
         }catch (Exception e){
             log.error("Failed to register in Publisher Manager Api.");
             log.error(e.getMessage());

@@ -3,7 +3,6 @@ package com.inatel.gamemanager.clients.publishermanager;
 import com.inatel.gamemanager.clients.publishermanager.models.RegisterRequestBody;
 import com.inatel.gamemanager.configs.PublishManagerServiceConfig;
 import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
-import com.inatel.gamemanager.utils.RestTemplateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +30,9 @@ public class PublisherManagerClientTest {
 
     @Before
     public void setUp() {
-        publisherManagerClient = new PublisherManagerClient();
-        publisherManagerClient.setRestTemplate(restTemplate);
-        publisherManagerClient.setPublishManagerService(publishManagerService);
+//        publisherManagerClient = new PublisherManagerClient();
+//        publisherManagerClient.setRestTemplate(restTemplate);
+//        publisherManagerClient.setPublishManagerService(publishManagerService);
     }
 
     @Test
