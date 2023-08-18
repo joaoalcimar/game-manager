@@ -12,8 +12,12 @@ import java.util.List;
 @RequestMapping("/game")
 public class GameManagementController {
 
+    private final GameManagementService gameManagementService;
+
     @Autowired
-    private GameManagementService gameManagementService;
+    public GameManagementController(GameManagementService gameManagementService) {
+        this.gameManagementService = gameManagementService;
+    }
 
     @PostMapping
     public GameResponse save(@RequestBody GameRequest request){

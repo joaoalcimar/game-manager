@@ -11,7 +11,6 @@ import com.inatel.gamemanager.models.dtos.requests.GameRequest;
 import com.inatel.gamemanager.models.dtos.responses.GameResponse;
 import com.inatel.gamemanager.repositories.GameManagementRepository;
 import com.inatel.gamemanager.utils.TimeFormatterUtil;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -22,14 +21,18 @@ import java.util.stream.Collectors;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
-@AllArgsConstructor
 public class GameManagementService {
 
-    @Autowired
-    private GameManagementRepository gameManagementRepository;
+    private final GameManagementRepository gameManagementRepository;
+
+    private final PublisherManagerClient publisherManagerClient;
 
     @Autowired
-    private PublisherManagerClient publisherManagerClient;
+    public GameManagementService(GameManagementRepository gameManagementRepository,
+                                 PublisherManagerClient publisherManagerClient) {
+        this.gameManagementRepository = gameManagementRepository;
+        this.publisherManagerClient = publisherManagerClient;
+    }
 
     public GameResponse save(GameRequest request){
         validatePublisherIdParameter(request.getPublisherId());
