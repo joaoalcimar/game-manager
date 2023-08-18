@@ -1,0 +1,88 @@
+version: "3"
+services:
+
+  publisher-manager-db:
+    image: mysql
+    hostname: mysql
+    container_name: publisher-manager-db
+    restart: always
+    networks:
+      - inatel
+    environment:
+      - MYSQL_DATABASE=bootdb
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+
+  publisher-manager:
+    image: adautomendes/publisher-manager
+    container_name: publisher-manager
+    restart: always
+    networks:
+      - inatel
+    depends_on:
+      - publisher-manager-db
+    environment:
+      - SERVER_HOST=publisher-manager
+      - SERVER_PORT=8080
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://publisher-manager:8080/actuator/health" ]
+      interval: 60s
+      timeout: 120s
+      retries: 20
+
+  game-db:
+    image: postgres:11
+    container_name: game-db
+    restart: always
+    networks:
+      - inatel
+    environment:
+      - POSTGRES_DB=game-manager
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U admin"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  game-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game-api
+    restart: always
+    depends_on:
+      publisher-manager:
+        condition: service_healthy
+      game-db:
+        condition: service_healthy
+    networks:
+      - inatel
+    environment:
+      - PORT=8081
+      - DB_HOST=game-db
+      - DB_PORT=5432
+      - DB_NAME=game-manager
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - PUBLISHER_SERVICE_HOST=publisher-manager
+      - PUBLISHER_SERVICE_PORT=8080
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://game-api:8081/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+
+networks:
+  inatel:
+    driver: bridge
