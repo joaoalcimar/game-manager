@@ -29,6 +29,11 @@ services:
       - MYSQL_PORT=3306
     ports:
       - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   game-db:
     image: postgres:11
@@ -42,6 +47,11 @@ services:
       - POSTGRES_PASSWORD=admin
     ports:
       - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U admin"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   game-api:
     build:
@@ -50,8 +60,10 @@ services:
     container_name: game-api
     restart: always
     depends_on:
-      - game-db
-      - publisher-manager
+      game-db:
+        condition: service_healthy
+      publisher-manager:
+        condition: service_healthy
     networks:
       - inatel
     environment:
@@ -65,6 +77,11 @@ services:
       - PUBLISHER_SERVICE_PORT=8080
     ports:
       - "8081:8081"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 networks:
   inatel:
