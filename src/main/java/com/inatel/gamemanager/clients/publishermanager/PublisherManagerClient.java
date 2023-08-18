@@ -6,6 +6,7 @@ import com.inatel.gamemanager.exceptions.UnexpectedResponseException;
 import com.inatel.gamemanager.utils.JsonConverterUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
@@ -29,6 +30,7 @@ public class PublisherManagerClient implements ApplicationListener<ContextRefres
 
     private PublishManagerServiceConfig publishManagerServiceConfig;
 
+    @Autowired
     public PublisherManagerClient(WebClient.Builder webClientBuilder,
                                   PublishManagerServiceConfig publishManagerServiceConfig) {
         this.publishManagerServiceConfig = publishManagerServiceConfig;

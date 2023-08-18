@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("publishercache")
 public class PublishManagerListenerController {
 
+    private final PublisherManagerClient publisherManagerClient;
+
     @Autowired
-    private PublisherManagerClient publisherManagerClient;
+    public PublishManagerListenerController(PublisherManagerClient publisherManagerClient) {
+        this.publisherManagerClient = publisherManagerClient;
+    }
 
     @DeleteMapping
     public HttpResponse cacheCleanUp() {
