@@ -30,10 +30,10 @@ services:
     ports:
       - "8080:8080"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: [ "CMD", "curl", "-f", "http://publisher-manager:8080/actuator/health" ]
+      interval: 60s
+      timeout: 120s
+      retries: 20
 
   game-db:
     image: postgres:11
@@ -60,9 +60,9 @@ services:
     container_name: game-api
     restart: always
     depends_on:
-      game-db:
-        condition: service_healthy
       publisher-manager:
+        condition: service_healthy
+      game-db:
         condition: service_healthy
     networks:
       - inatel
@@ -78,10 +78,10 @@ services:
     ports:
       - "8081:8081"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://game-api:8081/actuator/health" ]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 20
 
 networks:
   inatel:
