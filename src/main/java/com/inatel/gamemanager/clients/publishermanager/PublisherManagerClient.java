@@ -46,6 +46,7 @@ public class PublisherManagerClient {
 
         } catch (Exception e){
             log.error("Communication with Publisher API goes wrong.");
+            log.error(e.getMessage());
             throw new UnexpectedResponseException("We apologize, but an unexpected error occurred on our server. " +
                     "Contact Support.");
         }
@@ -69,6 +70,7 @@ public class PublisherManagerClient {
             restTemplate.post(url, requestBody, httpHeaders);
         }catch (Exception e){
             log.error("Failed to register in Publisher Manager Api.");
+            log.error(e.getMessage());
         }
 
         log.info("Game Manager API successfully registered in Publisher Manager.");
